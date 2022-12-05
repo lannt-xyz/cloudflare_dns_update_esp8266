@@ -27,6 +27,10 @@ void setup() {
   DynamicJsonDocument config = ddConfig.get();
   config["ip"] = "";
   ddConfig.update(config);
+
+  // start DDNS config web
+  ddConfig.createServer();
+  ddConfig.beginServer();
 }
 
 void loop() {
@@ -70,11 +74,12 @@ void updateEprom(String ip) {
 }
 
 void updateDNS(String ip) {
-  String zone = "b195e88cd18715f2423dac134dd47f35";
-  String dnsName = "lannt.store";
-  String dnsIdentifier = "405fb98a9c0646bb0b764ecc1999632d";
-  String email = "mr.n.anrew@gmail.com";
-  String key = "601ca050c6ecdef36eace80fc7785c86abc61";
+  DynamicJsonDocument config = ddConfig.get();
+  String zone = config["zone"];
+  String dnsName = config["dnsName"];
+  String dnsIdentifier = config["id"];
+  String email = config["email"];
+  String key = config["key"];
   String updateUrl = "https://api.cloudflare.com/client/v4/zones/" + zone + "/dns_records/" + dnsIdentifier;
 
   DynamicJsonDocument body(2480);
